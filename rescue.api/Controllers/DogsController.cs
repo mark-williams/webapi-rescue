@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Results;
 using recue.data;
 using rescue.domain;
 
@@ -19,10 +20,10 @@ namespace rescue.api.Controllers
         }
 
         // GET: api/Dogs
-        public IEnumerable<Animal> Get()
+        public IHttpActionResult Get()
         {
             var animals = _repo.GetAnimals().Where(a => a.AnimalType == AnimalType.Dog);
-            return animals;
+            return Ok(animals);
         }
 
         // GET: api/Dogs/5
@@ -38,13 +39,21 @@ namespace rescue.api.Controllers
         }
 
         // POST: api/Dogs
-        public void Post([FromBody]string value)
+        public IHttpActionResult Post([FromBody]Animal dog)
         {
+            var result = _repo.CreateAnimal(dog);
+            string uri = Url.Link("DefaultApi", new {id = result.Id});
+
+            return Created(new Uri(uri), result);
         }
 
         // PUT: api/Dogs/5
-        public void Put(int id, [FromBody]string value)
+        public IHttpActionResult Put(int id, [FromBody]Animal dog)
         {
+            dog.Id = id;
+            var result = _repo.SaveAnimal(dog);
+
+            return Ok();
         }
 
         // DELETE: api/Dogs/5
