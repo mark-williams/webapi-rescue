@@ -13,9 +13,9 @@ namespace rescue.api.Controllers
     {
         private readonly IRepository _repo;
 
-        public DogsController()
+        public DogsController(IRepository repository)
         {
-            _repo = new InMemoryRepository();
+            _repo = repository;
         }
 
         // GET: api/Dogs
