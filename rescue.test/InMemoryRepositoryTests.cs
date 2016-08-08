@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using recue.data;
 using rescue.domain;
 
@@ -24,6 +23,17 @@ namespace rescue.test
 
             Assert.That(animals, Is.Not.Null, "Null returned");
         }
+
+        [Test]
+        public void GivenARepositoryWhenICallGetAnimalTheCorrectAnimalIsReturned()
+        {
+            const int animalIdToTest = 1002;
+            var animal = _repository.GetAnimal(animalIdToTest);
+
+            Assert.That(animal, Is.Not.Null, "Null returned");
+            Assert.That(animal.Id, Is.EqualTo(animalIdToTest), "Incorrect animal Id");
+        }
+
 
         [Test]
         public void GivenARepositoryWhenICreateAnAnimalTheResultHasAValidId()
