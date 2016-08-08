@@ -26,9 +26,15 @@ namespace rescue.api.Controllers
         }
 
         // GET: api/Dogs/5
-        public string Get(int id)
+        public IHttpActionResult Get(int id)
         {
-            return "value";
+            var animal = _repo.GetAnimal(id);
+            if (animal == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(animal);
         }
 
         // POST: api/Dogs
