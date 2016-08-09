@@ -9,6 +9,6 @@ namespace rescue.domain
         Animal GetAnimal(int id);
         Animal CreateAnimal(Animal animal);
         Animal SaveAnimal(Animal animal);
-        void DeleteAnimal(Animal animal);
+        void DeleteAnimal(int animal);
     }
 }

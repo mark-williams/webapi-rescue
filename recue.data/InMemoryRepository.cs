@@ -7,38 +7,27 @@ namespace recue.data
 {
     public class InMemoryRepository : IRepository
     {
-        private readonly List<Animal> _animals;
-
-        public InMemoryRepository()
-        {
-            _animals = new List<Animal>
-            {
-                new Animal { Id = 1000, AnimalType = AnimalType.Dog, Name = "Bert", DateOfBirth = new DateTime(2008, 1, 1), Acquired = new DateTime(2012, 3, 6), AvailableForRehoming = true, Sex = Sex.Male },
-                new Animal { Id = 1001, AnimalType = AnimalType.Dog, Name = "Chaz", DateOfBirth = new DateTime(2009, 1, 1), Acquired = new DateTime(2012, 7, 2), AvailableForRehoming = true, Sex = Sex.Female },
-                new Animal { Id = 1002, AnimalType = AnimalType.Dog, Name = "Wilf", DateOfBirth = new DateTime(2013, 6, 10), Acquired = new DateTime(2014, 7, 6), AvailableForRehoming = true, Sex = Sex.Male },
-                new Animal { Id = 1003, AnimalType = AnimalType.Cat, Name = "Suzie", DateOfBirth = new DateTime(2009, 9, 24), Acquired = new DateTime(2016, 2, 18), AvailableForRehoming = true, Sex = Sex.Female }
-            };
-        }
+        private static readonly List<Animal> Animals = new List<Animal>();
 
         public IEnumerable<Animal> GetAnimals()
         {
-            return _animals;
+            return Animals;
         }
 
         public IEnumerable<Animal> GetAnimalsByType(AnimalType type)
         {
-            return _animals.Where(a => a.AnimalType == type);
+            return Animals.Where(a => a.AnimalType == type);
         }
 
         public Animal GetAnimal(int id)
         {
-            return _animals.FirstOrDefault(a => a.Id == id);
+            return Animals.FirstOrDefault(a => a.Id == id);
         }
 
         public Animal CreateAnimal(Animal animal)
         {
             animal.Id = GetNextId();
-            _animals.Add(animal);
+            Animals.Add(animal);
             return animal;
         }
 
@@ -46,6 +35,8 @@ namespace recue.data
         {
             var toUpdate = FindAnimalById(animal.Id);
 
+            // NB We don't allow amendment of the animal type as cats and dogs are identified by different apis, so it
+            // doesn'y make sense to use, say, /api/dogs to change a dog into a cat!
             toUpdate.AvailableForRehoming = animal.AvailableForRehoming;
             toUpdate.Acquired = animal.Acquired;
             toUpdate.DateOfBirth = animal.DateOfBirth;
@@ -57,16 +48,16 @@ namespace recue.data
         }
 
       
-        public void DeleteAnimal(Animal animal)
+        public void DeleteAnimal(int id)
         {
-            var toDelete = FindAnimalById(animal.Id);
+            var toDelete = FindAnimalById(id);
 
-            _animals.Remove(toDelete);
+            Animals.Remove(toDelete);
         }
 
         private Animal FindAnimalById(int id)
         {
-            var updated = _animals.FirstOrDefault(a => a.Id == id);
+            var updated = Animals.FirstOrDefault(a => a.Id == id);
             if (updated == null)
             {
                 throw new Exception($"No animal found for Id: {id}");
@@ -76,7 +67,12 @@ namespace recue.data
 
         private int GetNextId()
         {
-            return _animals.Max(a => a.Id) + 1;
+            if (Animals.Count == 0)
+            {
+                return 1;
+            }
+
+            return Animals.Max(a => a.Id) + 1;
         }
 
     }

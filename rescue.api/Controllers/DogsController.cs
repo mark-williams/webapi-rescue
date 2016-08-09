@@ -53,12 +53,14 @@ namespace rescue.api.Controllers
             dog.Id = id;
             var result = _repo.SaveAnimal(dog);
 
-            return Ok();
+            return Ok(result);
         }
 
         // DELETE: api/Dogs/5
-        public void Delete(int id)
+        public IHttpActionResult Delete(int id)
         {
+            _repo.DeleteAnimal(id);
+            return Ok();
         }
     }
 }
