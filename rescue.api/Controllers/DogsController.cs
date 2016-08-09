@@ -26,6 +26,12 @@ namespace rescue.api.Controllers
             return Ok(animals);
         }
 
+        public IHttpActionResult Get(string name)
+        {
+            var animals = _repo.GetAnimals().Where(a => a.AnimalType == AnimalType.Dog && a.Name.ToLower().Contains(name.ToLower()));
+            return Ok(animals);
+        }
+
         // GET: api/Dogs/5
         public IHttpActionResult Get(int id)
         {
