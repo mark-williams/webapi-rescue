@@ -60,7 +60,7 @@ namespace recue.data
             var updated = Animals.FirstOrDefault(a => a.Id == id);
             if (updated == null)
             {
-                throw new Exception($"No animal found for Id: {id}");
+                throw new NotFoundException($"No animal found for Id: {id}");
             }
             return updated;
         }

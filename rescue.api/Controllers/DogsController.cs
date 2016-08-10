@@ -48,7 +48,17 @@ namespace rescue.api.Controllers
         [Route("api/Dogs")]
         public IHttpActionResult Post([FromBody]Animal dog)
         {
+            if (dog == null)
+            {
+                return BadRequest("Insuficient data was provided to create the record");
+            }
+
             var result = _repo.CreateAnimal(dog);
+            if (result == null)
+            {
+                return Conflict();
+            }
+
             string uri = Url.Link("DefaultApi", new {id = result.Id});
 
             return Created(new Uri(uri), result);
@@ -57,8 +67,26 @@ namespace rescue.api.Controllers
         [Route("api/dogs/{id:int}")]
         public IHttpActionResult Put(int id, [FromBody]Animal dog)
         {
-            dog.Id = id;
-            var result = _repo.SaveAnimal(dog);
+            if (dog == null)
+            {
+                return BadRequest("Insuficient data was provided to update the record");
+            }
+
+            Animal result;
+            try
+            {
+                dog.Id = id;
+                result = _repo.SaveAnimal(dog);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+
 
             return Ok(result);
         }
