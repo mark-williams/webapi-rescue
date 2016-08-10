@@ -19,20 +19,21 @@ namespace rescue.api.Controllers
             _repo = repository;
         }
 
-        // GET: api/Dogs
+        [Route("api/dogs", Name="DefaultApi")]
         public IHttpActionResult Get()
         {
             var animals = _repo.GetAnimals().Where(a => a.AnimalType == AnimalType.Dog);
             return Ok(animals);
         }
 
+        [Route("api/dogs")]
         public IHttpActionResult Get(string name)
         {
             var animals = _repo.GetAnimals().Where(a => a.AnimalType == AnimalType.Dog && a.Name.ToLower().Contains(name.ToLower()));
             return Ok(animals);
         }
 
-        // GET: api/Dogs/5
+        [Route("api/dogs/{id:int}")]
         public IHttpActionResult Get(int id)
         {
             var animal = _repo.GetAnimal(id);
@@ -44,7 +45,7 @@ namespace rescue.api.Controllers
             return Ok(animal);
         }
 
-        // POST: api/Dogs
+        [Route("api/Dogs")]
         public IHttpActionResult Post([FromBody]Animal dog)
         {
             var result = _repo.CreateAnimal(dog);
@@ -53,7 +54,7 @@ namespace rescue.api.Controllers
             return Created(new Uri(uri), result);
         }
 
-        // PUT: api/Dogs/5
+        [Route("api/dogs/{id:int}")]
         public IHttpActionResult Put(int id, [FromBody]Animal dog)
         {
             dog.Id = id;
@@ -62,7 +63,7 @@ namespace rescue.api.Controllers
             return Ok(result);
         }
 
-        // DELETE: api/Dogs/5
+        [Route("api/dogs/{id:int}")]
         public IHttpActionResult Delete(int id)
         {
             _repo.DeleteAnimal(id);
